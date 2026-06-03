@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>commissions – armaan jhajj</title>
+  <link rel="icon" type="image/png" href="https://i.imgur.com/9vZBHkB.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#fff; color:#111; font-family: 'Playfair Display', Georgia, serif; }
+    main { max-width: 820px; margin: 4rem auto; padding: 0 1.25rem; }
+    h1 { margin: 0 0 1.5rem; font-style: italic; font-size: clamp(1.8rem,4vw,2.6rem); }
+    h2 { margin: 2rem 0 0.6rem; font-size: 1.3rem; font-weight: 600; }
+    p { line-height: 1.7; color: #333; margin: 0.4rem 0; }
+    a { color: #4b2ca0; text-decoration: underline; }
+    a:hover { color: #111; }
+
+    .sections { display: flex; gap: 3rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .section { flex: 1; min-width: 240px; }
+    .section p { font-size: 0.95rem; }
+
+    .examples-link { cursor: pointer; color: #4b2ca0; text-decoration: underline; background: none; border: none; font: inherit; padding: 0; }
+    .examples-link:hover { color: #111; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #fff;
+      padding: 2rem 2.5rem;
+      max-width: 420px;
+      width: 90%;
+      position: relative;
+    }
+    .modal h3 { margin: 0 0 1rem; font-size: 1.1rem; font-weight: 600; }
+    .modal ul { padding-left: 1.2rem; margin: 0; }
+    .modal li { line-height: 2; }
+    .modal-close {
+      position: absolute; top: 0.8rem; right: 1rem;
+      background: none; border: none; font-size: 1.4rem;
+      cursor: pointer; color: #888;
+    }
+    .modal-close:hover { color: #111; }
+
+    .divider { border: none; border-top: 1px solid #eee; margin: 2.5rem 0; }
+
+    form { max-width: 480px; }
+    label { display: block; margin-bottom: 1.2rem; font-size: 0.95rem; color: #333; }
+    label span { display: block; margin-bottom: 0.3rem; }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #ccc;
+      font-family: inherit;
+      font-size: 0.95rem;
+      background: #fff;
+      color: #111;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: #4b2ca0; }
+    textarea { resize: vertical; min-height: 100px; }
+    select { appearance: none; cursor: pointer; }
+
+    button[type="submit"] {
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 0.7rem 2rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button[type="submit"]:hover { background: #4b2ca0; }
+    button[type="submit"]:disabled { background: #999; cursor: not-allowed; }
+
+    .form-note { font-size: 0.85rem; color: #888; font-style: italic; margin-top: 1rem; }
+    .form-success { color: #2a7d2a; font-style: italic; display: none; }
+    .form-error { color: #c0392b; font-style: italic; display: none; }
+
+    nav { margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>commissions</h1>
+
+    <div class="sections">
+      <div class="section">
+        <h2>photography</h2>
+        <p>portraits, events, and creative shoots.</p>
+        <p><a href="gallery.html">view previous work</a></p>
+      </div>
+      <div class="section">
+        <h2>software</h2>
+        <p>websites, apps, and custom builds.</p>
+        <p><button class="examples-link" onclick="document.getElementById('examples-modal').classList.add('active')">view previous projects</button></p>
+      </div>
+    </div>
+
+    <p style="font-style: italic; color: #888;">pricing varies by project.</p>
+
+    <hr class="divider">
+
+    <h2>inquiry</h2>
+
+    <form id="commission-form">
+      <label>
+        <span>name</span>
+        <input type="text" name="name" required>
+      </label>
+      <label>
+        <span>email</span>
+        <input type="email" name="email" required>
+      </label>
+      <label>
+        <span>phone</span>
+        <input type="tel" name="phone" required placeholder="(000) 000-0000">
+      </label>
+      <label>
+        <span>type</span>
+        <select name="commission_type" required>
+          <option value="" disabled selected>select one</option>
+          <option value="photography">photography</option>
+          <option value="software">software</option>
+        </select>
+      </label>
+      <label>
+        <span>message</span>
+        <textarea name="message" required placeholder="tell me about your project"></textarea>
+      </label>
+      <button type="submit">submit</button>
+      <p class="form-success" id="form-success">sent — i'll be in touch.</p>
+      <p class="form-error" id="form-error">something went wrong. try again or <a href="contact.html">reach out directly</a>.</p>
+    </form>
+
+    <p class="form-note">have questions? <a href="contact.html">get in touch</a></p>
+
+    <nav><a href="/">home</a></nav>
+  </main>
+
+  <div class="modal-overlay" id="examples-modal" onclick="if(event.target===this)this.classList.remove('active')">
+    <div class="modal">
+      <button class="modal-close" onclick="document.getElementById('examples-modal').classList.remove('active')">&times;</button>
+      <h3>previous projects</h3>
+      <ul>
+        <li><a href="https://havemoments.com" target="_blank" rel="noopener">moments</a> — social platform</li>
+        <li><a href="https://www.hillspediatrics.com/" target="_blank" rel="noopener">hills pediatrics</a> — medical practice site</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://wbcbhynnxuwgoispuvlu.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_F9vyAnM8MXL13RcZmEt10Q_WGwFl_dF';
+
+    document.getElementById('commission-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('button[type="submit"]');
+      const successEl = document.getElementById('form-success');
+      const errorEl = document.getElementById('form-error');
+      successEl.style.display = 'none';
+      errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'sending...';
+
+      const data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+        commission_type: form.commission_type.value,
+        message: form.message.value.trim()
+      };
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/commissions`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error(res.statusText);
+        successEl.style.display = 'block';
+        form.reset();
+      } catch {
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'submit';
+      }
+    });
+  </script>
+</body>
+</html>
