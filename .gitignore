@@ -1,0 +1,7 @@
+.vercel
+
+# secrets / local tooling — never commit
+tools/.spotify-creds.json
+tools/.cache/
+.env
+.env.*
