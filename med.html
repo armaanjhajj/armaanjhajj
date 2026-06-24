@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>med – armaan jhajj</title>
+  <link rel="icon" type="image/png" href="https://i.imgur.com/9vZBHkB.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; background:#fff; color:#111; font-family: 'Playfair Display', Georgia, serif; }
+    main { max-width: 860px; margin: 4rem auto; padding: 0 1.25rem 2rem; }
+    h1 { margin: 0 0 0.75rem; font-style: italic; font-size: clamp(1.8rem,4vw,2.6rem); }
+    h2 { margin: 2rem 0 0.75rem; font-size: 1.15rem; font-weight: 600; color:#4b2ca0; }
+    p { line-height: 1.7; color:#333; }
+    .intro { max-width: 720px; }
+    .credentials {
+      display: grid;
+      gap: 0.5rem;
+      margin: 1rem 0 0;
+      padding: 0;
+      list-style: none;
+      line-height: 1.8;
+    }
+    .credentials strong {
+      display: inline-block;
+      min-width: 7rem;
+      font-weight: 600;
+      color:#4b2ca0;
+    }
+    .experience-list {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .experience {
+      border-top: 1px solid #111;
+      padding-top: 1rem;
+    }
+    .experience h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color:#111;
+    }
+    .experience p { margin: 0; }
+    nav { margin-top: 2rem; }
+    nav a { color:#111; text-decoration: underline; }
+
+    /* ASCII video (client-side render of a clip, ASCILINE-style, B&W) */
+    .ascii-video { margin: 0 0 1.6rem; display: flex; justify-content: center; }
+    #ascii {
+      margin: 0;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: clamp(4px, 0.95vw, 7px);
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: pre;
+      color: #4b2ca0;
+      background: #fff;
+      user-select: none;
+    }
+    #src-video, #sampler { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="ascii-video">
+      <pre id="ascii" aria-hidden="true"></pre>
+      <video id="src-video" muted loop playsinline autoplay preload="auto"></video>
+      <canvas id="sampler"></canvas>
+    </section>
+
+    <h1>med</h1>
+    <p class="intro">this is the side of me that sits inside ems, clinical work and patient care. i’ve rotated through hospital, office and field settings, and each one has shaped how i think about medicine.</p>
+
+    <h2>ems credentials</h2>
+    <ul class="credentials">
+      <li><strong>bls:</strong> 265413317385</li>
+      <li><strong>nremt:</strong> E4080768</li>
+      <li><strong>nj ems id:</strong> 665143</li>
+    </ul>
+
+    <h2>experience</h2>
+    <div class="experience-list">
+      <article class="experience">
+        <h3>rwj barnabas health</h3>
+        <p>completed ems training and shadowing, including time with hospital medics, emts and road crews while working toward licensure.</p>
+      </article>
+
+      <article class="experience">
+        <h3>rwj rahway</h3>
+        <p>served as an er technician and completed 200 volunteer hours supporting patient flow and frontline emergency department work.</p>
+      </article>
+
+      <article class="experience">
+        <h3>hills pediatrics</h3>
+        <p>worked as a medical assistant, office admin and patient liaison at a private pediatric practice. handled lab samples, icd-10 filing, charting and preliminary tests including hearing, vision, height, weight and vitals in a paper-based office.</p>
+      </article>
+
+      <article class="experience">
+        <h3>north brunswick first aid and rescue squad</h3>
+        <p>practiced ems as an emt, assisted the crew chief with patient assessments, lifted and moved patients, drove the ambulance and operated basic life support equipment.</p>
+      </article>
+
+      <article class="experience">
+        <h3>gem mobile health</h3>
+        <p>practiced ems as a crew chief in an ift system, operating basic life support and driving the ambulance interchangeably with one other partner.</p>
+      </article>
+    </div>
+
+    <nav><a href="/about">about</a> // <a href="/">home</a></nav>
+  </main>
+
+  <script>
+    // ASCII video renderer (client-side, no backend). Source was a gif,
+    // converted to a small web-safe mp4 so the existing video renderer can play it.
+    const VIDEO_SRC = 'images/videos/med.mp4';
+    const COLS = 110;          // horizontal resolution in characters
+    const CHAR_ASPECT = 0.5;   // characters are ~2x taller than wide
+    const RAMP = ' .:-=+*#%@'; // light to dark (white bg, so space = bright)
+
+    (function () {
+      const out = document.getElementById('ascii');
+      const video = document.getElementById('src-video');
+      const sampler = document.getElementById('sampler');
+      const ctx = sampler.getContext('2d', { willReadFrequently: true });
+
+      let rows = 0;
+      function fit() {
+        if (!video.videoWidth) return;
+        rows = Math.max(1, Math.round(COLS * (video.videoHeight / video.videoWidth) * CHAR_ASPECT));
+        sampler.width = COLS;
+        sampler.height = rows;
+      }
+
+      function frame() {
+        if (video.readyState >= 2 && video.videoWidth) {
+          if (sampler.width !== COLS || !rows) fit();
+          ctx.drawImage(video, 0, 0, COLS, rows);
+          const data = ctx.getImageData(0, 0, COLS, rows).data;
+          let s = '';
+          for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < COLS; x++) {
+              const i = (y * COLS + x) * 4;
+              const lum = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+              const idx = Math.round((1 - lum / 255) * (RAMP.length - 1));
+              s += RAMP[idx];
+            }
+            s += '\n';
+          }
+          out.textContent = s;
+        }
+        requestAnimationFrame(frame);
+      }
+
+      video.src = VIDEO_SRC;
+      video.addEventListener('loadeddata', () => { fit(); video.play().catch(() => {}); });
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
